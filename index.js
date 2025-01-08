@@ -1,40 +1,35 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const service = require('./service')
 const app = express();
 const PORT = 3000;
-const databaseUri = "mongodb://127.0.0.1:27017"
-const client = new MongoClient(databaseUri)
+
 
 app.use(express.json())
 
-app.get('/connect', async (req, res) => {
+app.get('/:collection', async (req, res) => {
+    let collection = req.params.collection
     try {
-        await client.connect()
-        await listDatabases(client)
+        const docs = await service.findAll(collection)
+        res.send(docs)
     } catch (e) {
-        console.error(e)
-    } finally {
-        await client.close()
+        console.log(e)
+        res.status(500)
     }
 })
 
-async function listDatabases(client) {
-    dbList = await client.db().admin().listDatabases()
-    console.log("Databases:")
-    dbList.databases.forEach(db => console.log(` - ${db.name}`))
-}
+app.post('/:collection', async (req, res) => {
+    const collection = req.params.collection
+    const doc = req.body
 
-app.get('/hello', (req, res) => {
-    res.send('Hello World');
-});
-
-app.post('/:entity', async (req, res) => {
-
-    const { collectionName } = req.params
-    const entityData = req.body
-    const entitySchema = new mongoose.Schema
-})  
+    try {
+        const result = await service.create(collection, doc)
+        res.status(201).send(result)
+    } catch (e) {
+        console.log(e)
+        res.status(500)
+    }
+})
 
 app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Server running on  http://localhost:${PORT}`);
 });
