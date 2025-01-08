@@ -27,3 +27,9 @@ npm install
 ```
 npm run server
 ```
+
+#### Conexão com o banco MongoDB
+
+Esse projeto usa o driver nativo do MongoDB para estabelecer conexão e operações CRUD.
+
+Para mais detalhes sobre como utilizar esse driver, acesse a [documentação](https://mongodb.github.io/node-mongodb-native/3.6/api/index.html).
