@@ -9,6 +9,7 @@ app.use(express.json());
 app.get("/:collection", async (req, res) => {
   const collection = req.params.collection;
 
+  // Parse query parameters
   const query = req.query.query ? JSON.parse(req.query.query) : {};
   const fields = req.query.fields
     ? req.query.fields.split(",").reduce((acc, field) => {
@@ -17,8 +18,13 @@ app.get("/:collection", async (req, res) => {
       }, {})
     : null;
 
+  // Pagination parameters with default values
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const skip = (page - 1) * limit;
+
   try {
-    const docs = await service.findAll(collection, query, fields);
+    const docs = await service.findAll(collection, query, fields, skip, limit);
     res.send(docs);
   } catch (e) {
     console.error(e);

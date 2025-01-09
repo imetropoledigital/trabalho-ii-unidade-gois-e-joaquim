@@ -1,13 +1,14 @@
 const config = require('./dbConfig')
 var ObjectId  = require('mongodb').ObjectId
 
-async function findAll(collection, query, fields) {
+async function findAll(collection, query, fields, skip, limit) {
   const db = await config.connect();
   console.log("Connected to database");
   const cursor = db.collection(collection).find(query);
   if (fields) {
     cursor.project(fields);
   }
+  cursor.skip(skip).limit(limit);
   const results = await cursor.toArray();
   console.log(`Queried ${collection} with results:`, results);
   return results;
