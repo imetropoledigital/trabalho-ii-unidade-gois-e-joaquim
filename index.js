@@ -24,7 +24,7 @@ app.get('/:collection/:id', async (req, res) => {
     let id = req.params.id
     
     try {
-        const result = await service.findOne(collection, id)
+        const result = await service.findOneById(collection, id)
         if (result == null) 
             res.status(404).send(`Could not found document with id: ${id} on collection: ${collection}`)
         else 
@@ -43,6 +43,23 @@ app.post('/:collection', async (req, res) => {
     try {
         const result = await service.create(collection, doc)
         res.status(201).send(result)
+    } catch (e) {
+        console.log(e)
+        res.status(500).send('Internal Server Error')
+    }
+})
+
+app.put('/:collection/:id', async (req, res) => {
+    const collection = req.params.collection
+    let id = req.params.id
+    const doc = req.body
+
+    try {
+        const result = await service.update(collection, id, doc)
+        if (result == 0)
+            res.status(404).send(`Could not found document with id: ${id} on collection: ${collection}`)
+        else if (result > 0)
+            res.send(`Document with id: ${id} was updated on collection: ${collection}`)
     } catch (e) {
         console.log(e)
         res.status(500).send('Internal Server Error')

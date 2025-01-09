@@ -15,7 +15,7 @@ async function create(collection, doc) {
     return result
 }
 
-async function findOne(collection, id) {
+async function findOneById(collection, id) {
     const db = await config.connect()
     console.log('Connected to database')
     const result = await db.collection(collection).findOne({_id: new ObjectId(id)})
@@ -27,4 +27,12 @@ async function findOne(collection, id) {
     return result
 }
 
-module.exports = { findAll, create, findOne }
+async function update(collection, id, doc) {
+    const db = await config.connect()
+    console.log('Connected to database')
+    const result = await db.collection(collection).updateOne({_id: new ObjectId(id)}, {$set: doc})
+    console.log(result)
+    return result.modifiedCount
+}
+
+module.exports = { findAll, create, findOneById, update }
