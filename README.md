@@ -28,6 +28,18 @@ npm install
 npm run server
 ```
 
+## Estrutura do projeto
+
+```
+.
+├── README.md
+├── dbConfig.js         # Conexão com o banco de dados
+├── index.js            # Controllers (endpoints da API)
+├── package-lock.json
+├── package.json
+└── service.js          # Service (lógica de negócio)
+```
+
 #### Conexão com o banco MongoDB
 
 Esse projeto usa o driver nativo do MongoDB para estabelecer conexão e operações CRUD.
