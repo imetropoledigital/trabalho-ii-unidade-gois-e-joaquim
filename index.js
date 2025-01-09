@@ -9,8 +9,16 @@ app.use(express.json());
 app.get("/:collection", async (req, res) => {
   const collection = req.params.collection;
 
-  // Parse query parameters
-  const query = req.query.query ? JSON.parse(req.query.query) : {};
+  // Parse query parameters and Convert regex strings
+  let query = req.query.query ? JSON.parse(req.query.query) : {};
+  for (const key in query) {
+    if (query[key].$regex) {
+      const regexParts = query[key].$regex.match(/^\/([^/]+)\/(.*)$/);
+      if (regexParts) {
+        query[key].$regex = new RegExp(regexParts[1], regexParts[2]);
+      }
+    }
+  }
   const fields = req.query.fields
     ? req.query.fields.split(",").reduce((acc, field) => {
         acc[field.replace("-", "")] = field.startsWith("-") ? 0 : 1;
